@@ -1,5 +1,30 @@
+#-----------------------------------------------------#
+# custom plot style formatter v0.5					  #
+# author: tatsunootoshigo, 7475un00705hi90@gmail.com  #
+#-----------------------------------------------------#
+
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter
+
+mpl.rcParams['mathtext.fontset'] = 'stix'
+mpl.rcParams['font.family'] = 'STIXGeneral'
+mpl.rcParams["font.serif"] = "STIX"
+mpl.rcParams["mathtext.fontset"] = "stix"
+
+# axes labels for plots
+axis_label_th = r'$thickness\, / \, nm$'
+axis_label_theta = r'$\theta$'
+axis_label_volt = r'$V$'
+axis_label_ohm = r'$R\;/\;\Omega$'
+axis_label_points = r'$point\;no.$'
+#axis_label_rr0 = r'$R_{xx}^{(z\rightarrow y)}\;/\;R_{0}$' 
+axis_label_rr0 = r'$R_{xx}\;/\;R_{xx}^{0}$'
+
+#def custom_axis_formater(custom_title, custom_x_label, custom_y_label, xmin, xmax, ymin, ymax, xprec, yprec):
 def custom_axis_formater(custom_title, custom_x_label, custom_y_label, xmin, xmax, ymin, ymax, xprec, yprec):
-	
+
 	# get axes and tick from plot 
 	ax = plt.gca()
 	# set the number of major and minor bins for x,y axes
@@ -47,6 +72,8 @@ def custom_axis_formater(custom_title, custom_x_label, custom_y_label, xmin, xma
 	ax.set_xlabel(custom_x_label, fontsize=16)
 	ax.set_ylabel(custom_y_label, fontsize=16)
 
+	plt.xlim(xmin, xmax)
+	plt.ylim(ymin, ymax)
 	# set plot title
 	#ax.set_title(custom_title, loc='right', fontsize=12)
 
