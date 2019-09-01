@@ -1,2 +1,2 @@
 # mhst
-Process multiple hysteresis files using pandas recursively
+Interactively process multiple hysteresis files using pandas, numpy and matplotlib
