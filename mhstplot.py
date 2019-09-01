@@ -26,6 +26,7 @@ version_name = 'mhst' + version + '.py'
 plot_title = 'hysteresis loops'
 plot_x_label = r'$H$'  
 plot_y_label = r'$M$'
+
 xmin = -1000
 xmax = 5400
 ymin = -16000
@@ -33,19 +34,21 @@ ymax = 16000
 xprec = 0
 yprec = 0
 
+# field step
+H_step = 500
+
 datasets_name = 'example_data'
 # output filnames
 out_pdf = 'mhst_plot' + datasets_name + '.pdf'
 out_svg = 'mhst_plot' + datasets_name + '.svg'
 
+
 def mhst_open_in():
+	""" The Function crates the DataFrame from all the .DAT files in the user selected directory """
 
 	# files counter 
 	file_count = 0
 
-	# field step
-	H_step = 500
-	
 	# dir selection popup gui
 	dirname = easygui.diropenbox()
 	
@@ -81,8 +84,8 @@ def mhst_open_in():
 		labely = 'M' + np.str(dataset_label)
 
 		# writing dataframe columns to be appended
-	
-		df_xi1 = pd.DataFrame([xi+i*H_step,yi]).T
+		#df_xi1 = pd.DataFrame([xi+i*H_step,yi]).T
+		df_xi1 = pd.DataFrame([xi,yi]).T
 		#print(df_xi1)
 		i+=1
 
@@ -93,7 +96,7 @@ def mhst_open_in():
 		df_xi = pd.concat([df_xi, df_xi1], axis=1)
 
 	return df_xi;
-	
+		
 hyst_data = mhst_open_in()
 
 # export dataframe to xlsx
@@ -119,7 +122,7 @@ colors = iter(plt.cm.inferno(np.linspace(0.3,0.8,10)))
 mfcolors = iter(plt.cm.plasma(np.linspace(0.1,1,10)))
 
 
-# collect plots here
+# collect plot objects here
 hyst_plots = []
 
 # column index operators init
@@ -139,7 +142,7 @@ for i in xrange(0,len(hyst_data.columns)/2):
 	
 	#print(pd.DataFrame([x,y]))
 	#print(hyst_labels[i]) 
-	hyst_plot = plt.plot(x, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label, visible=True)
+	hyst_plot = plt.plot(x+i*H_step, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label, visible=True)
 	hyst_plots = np.concatenate([hyst_plots, hyst_plot], axis=0)
 
 #plt.legend(loc='best', bbox_to_anchor=(0.94, 1.05), frameon=True, fontsize=9, ncol=len(hyst_data.columns)/2)
@@ -165,14 +168,78 @@ def chk_plot(label):
 
 chk_btn.on_clicked(chk_plot)
 
-# add plot selected button and event
+# add plot selected datasets button and event
 def plot_selected(event):
+	print(CheckButtons.get_status(chk_btn))
 	print('Plotting...')
 
-btn_ax = plt.axes([0.01, 0.17, 0.06, 0.03], frameon=True)
-plot_btn = Button(btn_ax, r'Plot', color='0.85', hovercolor='0.95')
-plot_btn.on_clicked(plot_selected)
+	chk_btn_status = CheckButtons.get_status(chk_btn)
 
+	# empty dataframe 
+	hyst_data_cut = pd.DataFrame()
+
+	# column index operators init
+	j = 0	# M
+	k = 1	# H
+
+	# Construct DataFrame containig only selected (checkboxed) datastes
+	for i in xrange(0,len(hyst_data.columns)/2):
+	
+		# generate dataset label
+		#hyst_label = hyst_labels[j][1:]
+		if chk_btn_status[i] == True:
+			#get dataset to plot
+			x = hyst_data.iloc[:,j]
+			y = hyst_data.iloc[:,k]
+			hyst_data_icut = pd.DataFrame([x,y]).T
+			hyst_data_cut = pd.concat([hyst_data_cut, hyst_data_icut], axis=1)
+		j+=2
+		k+=2
+
+	print(hyst_data_cut)
+	hyst_labels_cut = hyst_data_cut.columns.values
+
+	# plotting the dataframe
+	fig1, ax1 = plt.subplots(figsize=(9, 9))
+	fig1.tight_layout(pad=4.0, w_pad=0.5, h_pad=0.5)
+	plt.subplots_adjust(left=0.15, bottom=0.1, wspace=0.0, hspace=0.0)
+	fig1.canvas.set_window_title('hysteresis plotter' + ' ' + version_name) 
+	# plt.subplots_adjust(left=0.15, bottom=0.5, wspace=0.0, hspace=0.0)
+	plt.figtext(0.90, 0.97, version_name, size=10)
+
+	colors = iter(plt.cm.inferno(np.linspace(0.3,0.8,10)))
+	mfcolors = iter(plt.cm.plasma(np.linspace(0.1,1,10)))
+
+	# collect plot objects here
+	hyst_plots_cut = []
+
+	# column index operators init
+	j = 0	# M
+	k = 1	# H
+	# plot data recursively from DataFrame
+	for i in xrange(0,len(hyst_data_cut.columns)/2):
+	
+		# generate dataset label
+		hyst_label_cut = hyst_labels_cut[j][1:]
+	
+		#get dataset to plot
+		x = hyst_data_cut.iloc[:,j]
+		y = hyst_data_cut.iloc[:,k]
+		j+=2
+		k+=2
+
+		hyst_plot_cut = plt.plot(x+i*H_step, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label_cut, visible=True)
+		#hyst_plots_cut = np.concatenate([hyst_plots_cut, hyst_plot_cut], axis=0)
+
+	plt.legend(loc='upper left', frameon=True, fontsize=10, title='Anneal Time')
+
+	# format plot
+	custom_axis_formater(plot_title, plot_x_label, plot_y_label, xmin, xmax, ymin, ymax, xprec, yprec)
+	plt.show()
+
+btn_ax = plt.axes([0.01, 0.17, 0.06, 0.03], frameon=True)
+plot_btn = Button(btn_ax, 'Plot', color='0.85', hovercolor='0.95')
+plot_btn.on_clicked(plot_selected)
 
 # write a pdf file with fig and close
 pp = PdfPages(out_pdf)
