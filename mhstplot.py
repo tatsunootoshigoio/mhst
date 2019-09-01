@@ -237,6 +237,9 @@ def plot_selected(event):
 	custom_axis_formater(plot_title, plot_x_label, plot_y_label, xmin, xmax, ymin, ymax, xprec, yprec)
 	plt.show()
 
+	# export dataframe to xlsx
+	hyst_data_cut.to_excel("hyst_out_cut.xlsx")
+
 btn_ax = plt.axes([0.01, 0.17, 0.06, 0.03], frameon=True)
 plot_btn = Button(btn_ax, 'Plot', color='0.85', hovercolor='0.95')
 plot_btn.on_clicked(plot_selected)
