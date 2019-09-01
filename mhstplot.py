@@ -5,6 +5,7 @@
 
 # Imports
 from axfmtr import custom_axis_formater
+from matplotlib.widgets import CheckButtons, Button
 import glob, os
 import easygui
 import numpy as np
@@ -106,7 +107,6 @@ hyst_labels = hyst_data.columns.values
 print(hyst_labels)
 #print(hyst_labels[0])
 
-
 # plotting the dataframe
 fig, ax = plt.subplots(figsize=(9, 9))
 fig.tight_layout(pad=4.0, w_pad=0.5, h_pad=0.5)
@@ -117,6 +117,10 @@ plt.figtext(0.90, 0.97, version_name, size=10)
 
 colors = iter(plt.cm.inferno(np.linspace(0.3,0.8,10)))
 mfcolors = iter(plt.cm.plasma(np.linspace(0.1,1,10)))
+
+
+# collect plots here
+hyst_plots = []
 
 # column index operators init
 j = 0	# M
@@ -135,13 +139,40 @@ for i in xrange(0,len(hyst_data.columns)/2):
 	
 	#print(pd.DataFrame([x,y]))
 	#print(hyst_labels[i]) 
-	plt.plot(x, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label)
+	hyst_plot = plt.plot(x, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label, visible=True)
+	hyst_plots = np.concatenate([hyst_plots, hyst_plot], axis=0)
 
 #plt.legend(loc='best', bbox_to_anchor=(0.94, 1.05), frameon=True, fontsize=9, ncol=len(hyst_data.columns)/2)
-plt.legend(loc='top left', frameon=True, fontsize=10, title='Anneal Time')
+plt.legend(loc='upper left', frameon=True, fontsize=10, title='Anneal Time')
 
 # format plot
 custom_axis_formater(plot_title, plot_x_label, plot_y_label, xmin, xmax, ymin, ymax, xprec, yprec)
+
+# a list of Line2D objects for check button to play with
+#print(hyst_plots)
+
+# initialize checkbuttons with all visable plots
+chk_ax = plt.axes([0.0, 0.2, 0.2, 0.2], frameon=False)
+labels = [str(plot.get_label()) for  plot in hyst_plots]
+visibility = [plot.get_visible() for plot  in hyst_plots]
+chk_btn = CheckButtons(chk_ax, labels, visibility)
+
+# add check button action (toggle/enable plots visibility)
+def chk_plot(label):
+    index = labels.index(label)
+    hyst_plots[index].set_visible(not hyst_plots[index].get_visible())
+    plt.draw()
+
+chk_btn.on_clicked(chk_plot)
+
+# add plot selected button and event
+def plot_selected(event):
+	print('Plotting...')
+
+btn_ax = plt.axes([0.01, 0.17, 0.06, 0.03], frameon=True)
+plot_btn = Button(btn_ax, r'Plot', color='0.85', hovercolor='0.95')
+plot_btn.on_clicked(plot_selected)
+
 
 # write a pdf file with fig and close
 pp = PdfPages(out_pdf)
