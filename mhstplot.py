@@ -60,6 +60,8 @@ def mhst_open_in():
 	df_xi = pd.DataFrame()
 	
 	# looking only for *.DAT files to caount the total of those
+	print('input files in the selected dir are:')
+	print("----------------")
 	for file in sorted(glob.glob("*.DAT")):
 		
 		# count files in dir
@@ -77,7 +79,7 @@ def mhst_open_in():
 	
 		# read input file for column labels
 		dataset_label = np.genfromtxt(file, dtype=str, usecols=(2), skip_footer=len(xi)+6, unpack=None)
-		print(dataset_label)
+		#print(dataset_label)
 		
 		# create column labes for dataframe
 		labelx = 'H' + np.str(dataset_label)
@@ -107,6 +109,8 @@ hyst_data.to_excel("hyst_out.xlsx")
 #print((len(hyst_data.columns)/2))
 
 hyst_labels = hyst_data.columns.values
+print('A total of' + ' ' + str(len(hyst_data.columns)/2) + ' datasets in DataFrame,')
+print('generated DataFrame with column names:')
 print(hyst_labels)
 #print(hyst_labels[0])
 
@@ -120,7 +124,6 @@ plt.figtext(0.90, 0.97, version_name, size=10)
 
 colors = iter(plt.cm.inferno(np.linspace(0.3,0.8,10)))
 mfcolors = iter(plt.cm.plasma(np.linspace(0.1,1,10)))
-
 
 # collect plot objects here
 hyst_plots = []
@@ -171,7 +174,7 @@ chk_btn.on_clicked(chk_plot)
 # add plot selected datasets button and event
 def plot_selected(event):
 	print(CheckButtons.get_status(chk_btn))
-	print('Plotting...')
+	print('Plotting selected datasets...')
 
 	chk_btn_status = CheckButtons.get_status(chk_btn)
 
@@ -196,9 +199,11 @@ def plot_selected(event):
 		j+=2
 		k+=2
 
-	print(hyst_data_cut)
 	hyst_labels_cut = hyst_data_cut.columns.values
-
+	print(hyst_data_cut)
+	print('A total of' + ' ' + str(len(hyst_data_cut.columns)/2) + ' datasets in DataFrame were selected,')
+	print('generated a new DataFrame with column names:')
+	print(hyst_labels_cut)
 	# plotting the dataframe
 	fig1, ax1 = plt.subplots(figsize=(9, 9))
 	fig1.tight_layout(pad=4.0, w_pad=0.5, h_pad=0.5)
