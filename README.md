@@ -1,6 +1,6 @@
 # mhst - Multiple hysteresis loop data ploter
 
-<hr>
+</hr>
 
 ### Process multiple hysteresis files using numpy, matplotlib and pandas recursively
 
