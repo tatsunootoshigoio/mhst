@@ -1,5 +1,5 @@
 #-----------------------------------------------------#
-# multi hysteresis ploter v0.4					      #
+# multi hysteresis ploter v0.4			      #
 # author: tatsunootoshigo, 7475un00705hi90@gmail.com  #
 #-----------------------------------------------------#
 
@@ -19,7 +19,7 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter
 
 def mhst_open_in():
 
-	# files counter 
+	# file counter 
 	file_count = 0
 
 	# field step
@@ -35,7 +35,7 @@ def mhst_open_in():
 	# creating empty dataframe 
 	df_xi = pd.DataFrame()
 	
-	# looking only for *.DAT files to caount the total of those
+	# looking only for *.DAT files to count the total of these in the selected directory
 	for file in glob.glob("*.DAT"):
 		
 		# count files in dir
@@ -45,6 +45,7 @@ def mhst_open_in():
 
 	# field step iterator
  	i=0
+	
 	# loading x,y datasets from all .DAT files in selected dir
 	for file in glob.glob("*.DAT"):
  	
@@ -60,7 +61,6 @@ def mhst_open_in():
 		labely = 'M' + np.str(dataset_label)
 
 		# writing dataframe columns to be appended
-	
 		df_xi1 = pd.DataFrame([xi+i*H_step,yi]).T
 		print(df_xi1)
 		i+=1
