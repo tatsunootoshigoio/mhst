@@ -1,4 +1,4 @@
-# mhst - Multiple hysteresis loop data ploter
+# mhst - Multiple hysteresis loop data plotter (python 2.7)
 
 </hr>
 
@@ -6,9 +6,17 @@
 
 The way it works:
 
-- opens system dialog for you to choose a directory with your .dat files
-- puts the data column, by column into a pandas DataFrame
-- plots the DataFrame using matplotlib applying an horizontal offset between each of the loops
-- exports the DataFrame into .xlsx sheet file
+1. opens system dialog for you to choose a directory with your .dat files
+2. puts the data column, by column into a pandas DataFrame
+3. plots the DataFrame using matplotlib applying an horizontal offset between each of the loops
+4. exports the DataFrame into .xlsx sheet file
+
+</hr>
+
+TODO:
+
+- [ ] add a slider to dynamically adjust hysteresis loop spacing
+- [ ] add save to .pdf file button
+- [ ] add export to .xlsx sheet button
 
 
