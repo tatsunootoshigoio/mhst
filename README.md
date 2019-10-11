@@ -7,8 +7,8 @@
 The way it works:
 
 - opens system dialog for you to choose a directory with your .dat files
-- puts all the data from all the files in the chosen directory in a pandas DataFrame
-- plots the DataFrame using matplotlib
+- puts the data column, by column into a pandas DataFrame
+- plots the DataFrame using matplotlib applying an horizontal offset between each of the loops
 - exports the DataFrame into .xlsx sheet file
 
 
