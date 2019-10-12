@@ -1,5 +1,5 @@
 #-----------------------------------------------------#
-# multi hysteresis ploter v0.4					      #
+# multi hysteresis plotter v0.4			      #
 # author: tatsunootoshigo, 7475un00705hi90@gmail.com  #
 #-----------------------------------------------------#
 
@@ -46,7 +46,7 @@ out_svg = 'mhst_plot' + datasets_name + '.svg'
 def mhst_open_in():
 	""" The Function crates the DataFrame from all the .DAT files in the user selected directory """
 
-	# files counter 
+	# file counter 
 	file_count = 0
 
 	# dir selection popup gui
@@ -59,10 +59,7 @@ def mhst_open_in():
 	# creating empty dataframe 
 	df_xi = pd.DataFrame()
 	
-	# looking only for *.DAT files to caount the total of those
-	print('input files in the selected dir are:')
-	print("----------------")
-	for file in sorted(glob.glob("*.DAT")):
+
 		
 		# count files in dir
 		print(file_count, file)
@@ -71,6 +68,7 @@ def mhst_open_in():
 
 	# field step iterator
  	i=0
+	
 	# loading x,y datasets from all .DAT files in selected dir
 	for file in sorted(glob.glob("*.DAT")):
  	
@@ -86,9 +84,7 @@ def mhst_open_in():
 		labely = 'M' + np.str(dataset_label)
 
 		# writing dataframe columns to be appended
-		#df_xi1 = pd.DataFrame([xi+i*H_step,yi]).T
-		df_xi1 = pd.DataFrame([xi,yi]).T
-		#print(df_xi1)
+
 		i+=1
 
 		df_xi1.columns = [labelx, labely]
