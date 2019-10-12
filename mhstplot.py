@@ -1,5 +1,5 @@
 #-----------------------------------------------------#
-# multi hysteresis plotter v0.4			      #
+# multi hysteresis plotter v0.4			              #
 # author: tatsunootoshigo, 7475un00705hi90@gmail.com  #
 #-----------------------------------------------------#
 
