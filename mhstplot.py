@@ -42,10 +42,10 @@ datasets_name = 'example_data'
 out_pdf = 'mhst_plot' + datasets_name + '.pdf'
 out_svg = 'mhst_plot' + datasets_name + '.svg'
 
+''' The Function crates the DataFrame from all the .DAT files in the user selected directory '''
 
 def mhst_open_in():
-	""" The Function crates the DataFrame from all the .DAT files in the user selected directory """
-
+	
 	# file counter 
 	file_count = 0
 
@@ -58,9 +58,13 @@ def mhst_open_in():
 	
 	# creating empty dataframe 
 	df_xi = pd.DataFrame()
-	
 
-		
+	# looking only for *.DAT files to caount the total of those
+	print('input files in the selected dir are:')
+	print("----------------")
+	
+	for file in sorted(glob.glob("*.DAT")):
+	
 		# count files in dir
 		print(file_count, file)
 		file_count += 1
@@ -83,10 +87,11 @@ def mhst_open_in():
 		labelx = 'H' + np.str(dataset_label)
 		labely = 'M' + np.str(dataset_label)
 
-		# writing dataframe columns to be appended
+		# dataframe to be concatenated
+		df_xi1 = pd.DataFrame([xi,yi]).T
 
 		i+=1
-
+		# writing dataframe columns to be appended
 		df_xi1.columns = [labelx, labely]
 		df_xi1.head()
 		
@@ -94,21 +99,18 @@ def mhst_open_in():
 		df_xi = pd.concat([df_xi, df_xi1], axis=1)
 
 	return df_xi;
-		
+
+# open data files and process them		
 hyst_data = mhst_open_in()
 
 # export dataframe to xlsx
 hyst_data.to_excel("hyst_out.xlsx")
 
-#print(hyst_data)
-#print(np.size(hyst_data)/2)
-#print((len(hyst_data.columns)/2))
-
+# add labeling to the dataframe
 hyst_labels = hyst_data.columns.values
 print('A total of' + ' ' + str(len(hyst_data.columns)/2) + ' datasets in DataFrame,')
 print('generated DataFrame with column names:')
 print(hyst_labels)
-#print(hyst_labels[0])
 
 # plotting the dataframe
 fig, ax = plt.subplots(figsize=(9, 9))
@@ -127,6 +129,7 @@ hyst_plots = []
 # column index operators init
 j = 0	# M
 k = 1	# H
+
 # plot data recursively from DataFrame
 for i in xrange(0,len(hyst_data.columns)/2):
 	
@@ -139,12 +142,9 @@ for i in xrange(0,len(hyst_data.columns)/2):
 	j+=2
 	k+=2
 	
-	#print(pd.DataFrame([x,y]))
-	#print(hyst_labels[i]) 
 	hyst_plot = plt.plot(x+i*H_step, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label, visible=True)
 	hyst_plots = np.concatenate([hyst_plots, hyst_plot], axis=0)
 
-#plt.legend(loc='best', bbox_to_anchor=(0.94, 1.05), frameon=True, fontsize=9, ncol=len(hyst_data.columns)/2)
 plt.legend(loc='upper left', frameon=True, fontsize=10, title='Anneal Time')
 
 # format plot
@@ -181,12 +181,11 @@ def plot_selected(event):
 	j = 0	# M
 	k = 1	# H
 
-	# Construct DataFrame containig only selected (checkboxed) datastes
+	# construct DataFrame containig only selected (checkboxed) datastes
 	for i in xrange(0,len(hyst_data.columns)/2):
 	
-		# generate dataset label
-		#hyst_label = hyst_labels[j][1:]
 		if chk_btn_status[i] == True:
+
 			#get dataset to plot
 			x = hyst_data.iloc[:,j]
 			y = hyst_data.iloc[:,k]
@@ -196,18 +195,24 @@ def plot_selected(event):
 		k+=2
 
 	hyst_labels_cut = hyst_data_cut.columns.values
+	
 	print(hyst_data_cut)
 	print('A total of' + ' ' + str(len(hyst_data_cut.columns)/2) + ' datasets in DataFrame were selected,')
 	print('generated a new DataFrame with column names:')
 	print(hyst_labels_cut)
-	# plotting the dataframe
+
+	# plot figure for the dataframe
 	fig1, ax1 = plt.subplots(figsize=(9, 9))
 	fig1.tight_layout(pad=4.0, w_pad=0.5, h_pad=0.5)
 	plt.subplots_adjust(left=0.15, bottom=0.1, wspace=0.0, hspace=0.0)
+
+	# set widget window title
 	fig1.canvas.set_window_title('hysteresis plotter' + ' ' + version_name) 
-	# plt.subplots_adjust(left=0.15, bottom=0.5, wspace=0.0, hspace=0.0)
+	
+	# plot version info in the description
 	plt.figtext(0.90, 0.97, version_name, size=10)
 
+	# define datapoint markers colors
 	colors = iter(plt.cm.inferno(np.linspace(0.3,0.8,10)))
 	mfcolors = iter(plt.cm.plasma(np.linspace(0.1,1,10)))
 
@@ -217,6 +222,7 @@ def plot_selected(event):
 	# column index operators init
 	j = 0	# M
 	k = 1	# H
+
 	# plot data recursively from DataFrame
 	for i in xrange(0,len(hyst_data_cut.columns)/2):
 	
@@ -230,8 +236,7 @@ def plot_selected(event):
 		k+=2
 
 		hyst_plot_cut = plt.plot(x+i*H_step, y, 'o', color=next(colors), mfc=next(mfcolors), markersize=6, label=hyst_label_cut, visible=True)
-		#hyst_plots_cut = np.concatenate([hyst_plots_cut, hyst_plot_cut], axis=0)
-
+		
 	plt.legend(loc='upper left', frameon=True, fontsize=10, title='Anneal Time')
 
 	# format plot
@@ -253,4 +258,5 @@ pp.close()
 # save as .svg too
 fig = plt.savefig(out_svg)
 
+# show the widget with the plot
 plt.show()
